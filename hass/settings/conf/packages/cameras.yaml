@@ -6,7 +6,7 @@ eufy_security:
 camera:
   - platform: ffmpeg
     name: Basement Camera
-    input: -rtsp_transport tcp -i rtsp://172.16.20.198:8554/unicast
+    input: -rtsp_transport tcp -i rtsp://172.16.20.20/ch0_0.h264
 
   - platform: ffmpeg
     name: Garage Camera
@@ -18,4 +18,4 @@ camera:
 
   - platform: ffmpeg
     name: Guest Bedroom Camera
-    input: -rtsp_transport tcp -i rtsp://172.16.20.20/ch0_0.h264
+    input: -rtsp_transport tcp -i rtsp://172.16.20.198:8554/unicast
