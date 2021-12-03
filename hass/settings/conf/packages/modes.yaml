@@ -316,7 +316,7 @@ script:
       - alias: "Turn SimpliSafe audible notifications on"
         service: simplisafe.set_system_properties
         data:
-          system_id: !secret simplisafe_system_id
+          device_id: 936e2eebe6c64edfb380853bcab5fe8c
           chime_volume: medium
           voice_prompt_volume: medium
 
@@ -371,7 +371,7 @@ script:
       - alias: "Turn SimpliSafe audible notifications off"
         service: simplisafe.set_system_properties
         data:
-          system_id: !secret simplisafe_system_id
+          device_id: 936e2eebe6c64edfb380853bcab5fe8c
           chime_volume: "off"
           voice_prompt_volume: "off"
 
