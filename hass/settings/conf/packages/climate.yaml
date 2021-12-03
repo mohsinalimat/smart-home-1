@@ -7,6 +7,7 @@ automation:
     trigger:
       - platform: state
         entity_id: climate.thermostat
+        to: ~
 
       - platform: state
         id: away_mode_off
@@ -29,17 +30,6 @@ automation:
           - input_number.nighttime_temperature_heat
           - input_number.thermostat_eco_high_threshold
           - input_number.thermostat_eco_low_threshold
-
-    condition:
-      # In the case of the thermostat, we want to make sure that we only trigger
-      # this automation when the actual state changes (so that actions like
-      # bumping the heat a few degrees higher doesn't trigger it):
-      - condition: template
-        value_template: >-
-          {{
-            trigger.from_state
-            and trigger.to_state.state != trigger.from_state.state
-          }}
 
     action:
       choose:
