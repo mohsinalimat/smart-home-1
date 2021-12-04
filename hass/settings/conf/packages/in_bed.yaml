@@ -8,49 +8,29 @@ binary_sensor:
       - platform: state
         entity_id: sun.sun
         to_state: below_horizon
-        prob_given_true: 0.800
-        prob_given_false: 0.214
+        prob_given_true: 0.900
+        prob_given_false: 0.143
 
       - platform: state
-        entity_id: binary_sensor.living_room_tv_playing
+        entity_id: binary_sensor.watching_tv
         to_state: "off"
         prob_given_true: 1.00
-        prob_given_false: 0.714
+        prob_given_false: 0.643
 
       - platform: state
-        entity_id: binary_sensor.basement_tv_playing
+        entity_id: binary_sensor.listening_to_music
         to_state: "off"
-        prob_given_true: 1.00
-        prob_given_false: 0.714
-
-      - platform: state
-        entity_id: group.kitchen_lights
-        to_state: "off"
-        prob_given_true: 1.00
-        prob_given_false: 0.714
-
-      - platform: state
-        entity_id: media_player.main_level_outdoors
-        to_state: idle
         prob_given_true: 1.00
         prob_given_false: 0.286
 
       - platform: state
-        entity_id: media_player.office
-        to_state: idle
-        prob_given_true: 1.00
-        prob_given_false: 0.357
+        entity_id: group.kitchen_lights
+        to_state: "off"
+        prob_given_true: 0.900
+        prob_given_false: 0.714
 
   - platform: template
     sensors:
-      basement_tv_playing:
-        friendly_name: Basement TV Playing
-        value_template: >-
-          {{
-            is_state("media_player.basement_roku", "playing") or
-            is_state("remote.basement_tv", "on")
-          }}
-
       in_bed:
         friendly_name: In Bed
         value_template: >-
@@ -59,10 +39,21 @@ binary_sensor:
             is_state("binary_sensor.in_bed_estimate", "on")
           }}
 
-      living_room_tv_playing:
-        friendly_name: Living Room TV Playing
+      listening_to_music:
+        friendly_name: Listening to Music
         value_template: >-
           {{
+            is_state("media_player.main_level_outdoors", "playing") or
+            is_state("media_player.office", "playing") or
+            is_state("media_player.sonos_roam", "playing") or
+          }}
+
+      watching_tv:
+        friendly_name: Watching TV
+        value_template: >-
+          {{
+            is_state("media_player.basement_roku", "playing") or
+            is_state("remote.basement_tv", "on") or
             is_state("media_player.living_room", "playing") or
             is_state("media_player.living_room_roku", "playing") or
             is_state("remote.living_room_tv", "on")
