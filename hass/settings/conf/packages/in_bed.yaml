@@ -45,7 +45,7 @@ binary_sensor:
           {{
             is_state("media_player.main_level_outdoors", "playing") or
             is_state("media_player.office", "playing") or
-            is_state("media_player.sonos_roam", "playing") or
+            is_state("media_player.sonos_roam", "playing")
           }}
 
       watching_tv:
