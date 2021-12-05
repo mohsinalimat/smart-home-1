@@ -29,6 +29,12 @@ binary_sensor:
         prob_given_true: 0.900
         prob_given_false: 0.714
 
+      - platform: state
+        entity_id: switch.master_bedroom_salt_lamp
+        to_state: "off"
+        prob_given_true: 1.000
+        prob_given_false: 0.429
+
   - platform: template
     sensors:
       in_bed:
