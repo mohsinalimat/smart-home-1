@@ -6,7 +6,6 @@ networks:
 
 services:
   docker-socket-proxy:
-    container_name: docker-socket-proxy
     environment:
       CONTAINERS: 1
     image: tecnativa/docker-socket-proxy:latest
@@ -19,7 +18,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   ecowitt2mqtt:
-    container_name: ecowitt2mqtt
     depends_on:
       - vernemq
     environment:
@@ -33,7 +31,6 @@ services:
     restart: always
 
   esphome:
-    container_name: esphome
     depends_on:
       - traefik
     environment:
@@ -57,7 +54,6 @@ services:
     cap_add:
       - NET_ADMIN
       - NET_RAW
-    container_name: fail2ban
     environment:
       F2B_DB_PURGE_AGE: 1d
       F2B_MAX_RETRY: 3
@@ -73,7 +69,6 @@ services:
       - fail2ban-data:/data
 
   hass:
-    container_name: hass
     depends_on:
       - hass-db
       - traefik
@@ -102,7 +97,6 @@ services:
       - hass-config:/config
 
   hass-db:
-    container_name: hass-db
     environment:
       POSTGRES_DB: ${HASS_DB_NAME}
       POSTGRES_PASSWORD: ${HASS_DB_PASSWORD}
@@ -124,7 +118,6 @@ services:
   netdata:
     cap_add:
       - SYS_PTRACE
-    container_name: netdata
     environment:
       NETDATA_CLAIM_ROOMS: "${NETDATA_CLAIM_ROOMS}"
       NETDATA_CLAIM_TOKEN: "${NETDATA_CLAIM_TOKEN}"
@@ -161,7 +154,6 @@ services:
       --providers.docker.endpoint=tcp://docker-socket-proxy:2375
       --providers.docker.exposedbydefault=false
       --providers.file.directory=/etc/traefik/
-    container_name: traefik
     depends_on:
       - docker-socket-proxy
     environment:
@@ -198,7 +190,6 @@ services:
       - letsencrypt-data:/letsencrypt
 
   vernemq:
-    container_name: vernemq
     environment:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
       DOCKER_VERNEMQ_PLUGINS.vmq_bridge: "on"
@@ -233,7 +224,6 @@ services:
       - /usr/share/ca-certificates:/usr/share/ca-certificates:ro
 
   zwave-js:
-    container_name: zwave-js
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
     environment:
