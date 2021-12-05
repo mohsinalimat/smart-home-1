@@ -311,6 +311,7 @@ script:
         target:
           entity_id:
             - automation.cycle_master_toilet_fan_during_the_day
+            - switch.christmas_tree
             - switch.kitchen_pendant_lights
 
       - alias: "Turn SimpliSafe audible notifications on"
