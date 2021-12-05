@@ -121,6 +121,31 @@ services:
     volumes:
       - hass-db-data:/var/lib/postgresql/data
 
+  netdata:
+    cap_add:
+      - SYS_PTRACE
+    container_name: netdata
+    environment:
+      NETDATA_CLAIM_ROOMS: "${NETDATA_CLAIM_ROOMS}"
+      NETDATA_CLAIM_TOKEN: "${NETDATA_CLAIM_TOKEN}"
+      NETDATA_CLAIM_URL: "https://app.netdata.cloud"
+    hostname: pmc-lxc-homeautomation
+    image: "netdata/netdata:v${NETDATA_VERSION}"
+    ports:
+      - 19999:19999
+    restart: always
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /etc/group:/host/etc/group:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /etc/passwd:/host/etc/passwd:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - netdata-cache:/var/cache/netdata
+      - netdata-config:/etc/netdata
+      - netdata-lib:/var/lib/netdata
+
   traefik:
     command: |
       --accesslog.filepath=/var/log/access.log
@@ -232,4 +257,7 @@ volumes:
   hass-config:
   hass-db-data:
   letsencrypt-data:
+  netdata-cache:
+  netdata-config:
+  netdata-lib:
   zwave-js-config:
