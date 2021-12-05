@@ -2,7 +2,15 @@
 version: "3"
 
 networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+
   traefik:
+    ipam:
+      config:
+        - subnet: 172.23.0.0/16
 
 services:
   docker-socket-proxy:
