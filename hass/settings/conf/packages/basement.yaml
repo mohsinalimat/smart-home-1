@@ -45,8 +45,8 @@ automation:
     action:
       - alias: "Reboot the Guardian"
         service: guardian.reboot
-        target:
-          device_id: 3c34a53e83b4583eef666aafcdafaefc
+        data:
+          device_id: 973d0b8dceae7b82582888bd7edf4fa2
 
   - alias: "Retrieve humidistat Switchbot's battery level every hour"
     id: "retrieve_humidistat_switchbot_s_battery_level_every_hour"
