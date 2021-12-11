@@ -143,6 +143,9 @@ automation:
     id: "notify_when_wolfie_cycle_is_complete"
 
     trigger:
+      - platform: homeassistant
+        event: start
+
       - platform: state
         entity_id: input_select.wolfie_bin_status
         to: Full
