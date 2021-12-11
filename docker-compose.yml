@@ -98,7 +98,6 @@ services:
       - ./hass/settings/custom_components:/config/custom_components
       - ./hass/settings/scenes.yaml:/config/scenes.yaml
       - ./hass/settings/secrets.yaml:/config/secrets.yaml
-      - ./hass/settings/ssh_keys:/config/ssh_keys
       - hass-config:/config
 
   hass-db:
