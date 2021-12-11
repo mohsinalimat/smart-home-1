@@ -99,7 +99,6 @@ services:
       - ./hass/settings/scenes.yaml:/config/scenes.yaml
       - ./hass/settings/secrets.yaml:/config/secrets.yaml
       - ./hass/settings/ssh_keys:/config/ssh_keys
-      - ./simplipy:/usr/local/lib/python3.9/site-packages/simplipy
       - hass-config:/config
 
   hass-db:
