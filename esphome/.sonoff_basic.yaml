@@ -16,6 +16,10 @@ binary_sensor:
   - name: ${device_friendly_name} Status
     platform: status
 
+button:
+  - platform: restart
+    name: ${device_friendly_name} Restart
+
 esphome:
   board: esp01_1m
   name: ${device_name}

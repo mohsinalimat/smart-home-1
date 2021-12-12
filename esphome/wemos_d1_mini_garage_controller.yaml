@@ -62,6 +62,10 @@ binary_sensor:
     name: Britt's Parking Spot Occupied
     platform: template
 
+button:
+  - platform: restart
+    name: Wemos D1 Mini Garage Controller Restart
+
 cover:
   - close_action:
       - if:

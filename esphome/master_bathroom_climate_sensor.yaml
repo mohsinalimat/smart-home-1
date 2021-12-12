@@ -8,6 +8,10 @@ binary_sensor:
   - name: Master Bathroom Climate Sensor Status
     platform: status
 
+button:
+  - platform: restart
+    name: Master Bathroom Climate Sensor Restart
+
 esphome:
   board: d1_mini
   name: master-bathroom-climate-sensor
