@@ -7,7 +7,10 @@ networks:
       config:
         - subnet: 172.22.0.0/16
 
-  traefik:
+  ingress:
+    ipam:
+      config:
+        - subnet: 172.27.0.0/16
 
 services:
   docker-socket-proxy:
@@ -15,7 +18,7 @@ services:
       CONTAINERS: 1
     image: tecnativa/docker-socket-proxy:latest
     networks:
-      - traefik
+      - ingress
     ports:
       - 127.0.0.1:2375:2375/tcp
     restart: always
@@ -46,7 +49,7 @@ services:
     labels:
       traefik.enable: true
       traefik.http.routers.esphome.entrypoints: websecure
-      traefik.http.routers.esphome.middlewares: security
+      traefik.http.routers.esphome.middlewares: blocklist,security
       traefik.http.routers.esphome.rule: Host(`${TRAEFIK_HOST_ESPHOME}`)
       traefik.http.routers.esphome.tls: true
       traefik.http.services.esphome.loadbalancer.server.port: 6052
@@ -85,7 +88,7 @@ services:
       traefik.frontend.passHostHeader: true
       traefik.frontend.whiteList.useXForwardedFor: true
       traefik.http.routers.hass.entrypoints: websecure
-      traefik.http.routers.hass.middlewares: security
+      traefik.http.routers.hass.middlewares: blocklist,security
       traefik.http.routers.hass.rule: Host(`${TRAEFIK_HOST_HASS}`)
       traefik.http.routers.hass.tls: true
       traefik.http.services.hass.loadbalancer.server.port: 8123
@@ -160,6 +163,7 @@ services:
       --providers.file.directory=/etc/traefik/
     depends_on:
       - docker-socket-proxy
+      - traefik-middleware-ipfilter
     environment:
       LINODE_PROPAGATION_TIMEOUT: 900
       LINODE_TOKEN: ${TRAEFIK_LINODE_API_KEY}
@@ -170,10 +174,12 @@ services:
     labels:
       traefik.enable: true
       traefik.http.middlewares.auth.basicauth.users: ${TRAEFIK_USERS}
+      traefik.http.middlewares.blocklist.forwardauth.address: >-
+        http://traefik-middleware-ipfilter:8081
       traefik.http.middlewares.security.ratelimit.average: 100
       traefik.http.middlewares.security.ratelimit.burst: 50
       traefik.http.routers.traefik.entrypoints: websecure
-      traefik.http.routers.traefik.middlewares: auth,security
+      traefik.http.routers.traefik.middlewares: auth,blocklist,security
       traefik.http.routers.traefik.rule: Host(`${TRAEFIK_HOST_TRAEFIK}`)
       traefik.http.routers.traefik.service: api@internal
       traefik.http.routers.traefik.tls.certresolver: linode
@@ -183,8 +189,7 @@ services:
       traefik.http.routers.wildcard-certs.tls.domains[0].sans: |
         *.${TRAEFIK_DOMAIN}
     networks:
-      - default
-      - traefik
+      - ingress
     ports:
       - 443:443/tcp
     restart: always
@@ -192,6 +197,23 @@ services:
       - ./traefik/settings:/etc/traefik:ro
       - /var/log/traefik:/var/log
       - letsencrypt-data:/letsencrypt
+
+  traefik-middleware-ipfilter:
+    build:
+      context: ./lib/docker-nginx-with-modules
+      args:
+        modules: https://github.com/leev/ngx_http_geoip2_module.git
+    networks:
+      - default
+      - ingress
+    ports:
+      - 8081:8081/tcp
+    restart: always
+    volumes:
+      - ./traefik-middleware-ipfilter/geoip.conf:/etc/nginx/conf.d/geoip.conf:ro
+      - ./traefik-middleware-ipfilter/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./traefik-middleware-ipfilter/traefik.conf:/etc/nginx/conf.d/traefik.conf:ro
+      - /usr/share/GeoIP:/usr/share/GeoIP:ro
 
   vernemq:
     environment:
@@ -236,7 +258,7 @@ services:
     labels:
       traefik.enable: true
       traefik.http.routers.zwave_js.entrypoints: websecure
-      traefik.http.routers.zwave_js.middlewares: security
+      traefik.http.routers.zwave_js.middlewares: blocklist,security
       traefik.http.routers.zwave_js.rule: Host(`${TRAEFIK_HOST_ZWAVE_JS}`)
       traefik.http.routers.zwave_js.tls: true
       traefik.http.services.zwave_js.loadbalancer.server.port: 8091

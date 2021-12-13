@@ -1,0 +1,3 @@
+[submodule "lib/docker-nginx-with-modules"]
+	path = lib/docker-nginx-with-modules
+	url = https://github.com/tsuru/docker-nginx-with-modules.git
