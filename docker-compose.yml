@@ -58,24 +58,6 @@ services:
     volumes:
       - ./esphome:/config
 
-  fail2ban:
-    cap_add:
-      - NET_ADMIN
-      - NET_RAW
-    environment:
-      F2B_DB_PURGE_AGE: 1d
-      F2B_MAX_RETRY: 3
-      TZ: America/Denver
-    image: crazymax/fail2ban:${FAIL2BAN_CONTAINER_VERSION}
-    network_mode: host
-    restart: always
-    volumes:
-      - ./fail2ban/settings/filter.d:/data/filter.d:ro
-      - ./fail2ban/settings/jail.d:/data/jail.d:ro
-      - ./fail2ban/settings/jail.local:/data/jail.local:ro
-      - /var/log:/var/log:ro
-      - fail2ban-data:/data
-
   hass:
     depends_on:
       - hass-db
@@ -269,7 +251,6 @@ services:
       - zwave-js-config:/usr/src/app/store
 
 volumes:
-  fail2ban-data:
   hass-config:
   hass-db-data:
   letsencrypt-data:
