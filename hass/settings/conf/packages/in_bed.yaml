@@ -60,7 +60,6 @@ binary_sensor:
           {{
             is_state("media_player.basement_roku", "playing") or
             is_state("remote.basement_tv", "on") or
-            is_state("media_player.living_room", "playing") or
             is_state("media_player.living_room_roku", "playing") or
             is_state("remote.living_room_tv", "on")
           }}
