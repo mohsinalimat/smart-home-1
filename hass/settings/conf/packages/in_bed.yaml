@@ -3,7 +3,7 @@ binary_sensor:
   - platform: bayesian
     name: In Bed Estimate
     prior: 0.417
-    probability_threshold: 0.970
+    probability_threshold: 0.985
     observations:
       - platform: state
         entity_id: sun.sun
