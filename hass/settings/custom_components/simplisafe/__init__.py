@@ -596,8 +596,7 @@ class SimpliSafe:
             if self._websocket_reconnect_task:
                 self._websocket_reconnect_task.cancel()
 
-            if self._api.websocket.connected:
-                await self._api.websocket.async_disconnect()
+            await self._api.websocket.async_disconnect()
 
         self.entry.async_on_unload(
             self._hass.bus.async_listen_once(
