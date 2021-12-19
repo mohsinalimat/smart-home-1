@@ -144,6 +144,7 @@ group:
       - switch.christmas_tree
       - switch.kitchen_pendant_lights
       - switch.master_bedroom_salt_lamp
+      - switch.master_patio_outdoor_plug
       - switch.office_salt_lamp
       - switch.reading_lamp
 
@@ -349,6 +350,7 @@ script:
             - switch.basement_lights
             - switch.fireplace
             - switch.garage_lights
+            - switch.master_patio_outdoor_plug
             - switch.office_salt_lamp
 
       - alias: "Lock all of our door locks"
