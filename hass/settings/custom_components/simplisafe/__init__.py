@@ -520,7 +520,7 @@ class SimpliSafe:
         self._system_notifications[system.system_id] = latest_notifications
 
     async def _async_start_websocket_loop(self) -> None:
-        """Define a callback for connecting to the websocket."""
+        """Start a websocket reconnection loop."""
         if TYPE_CHECKING:
             assert self._api.websocket
 
@@ -542,6 +542,16 @@ class SimpliSafe:
             self._websocket_reconnect_task = self._hass.async_create_task(
                 self._async_start_websocket_loop()
             )
+
+    async def _async_stop_websocket_loop(self) -> None:
+        """Stop any existing websocket reconnection loop."""
+        if self._websocket_reconnect_task:
+            self._websocket_reconnect_task.cancel()
+            try:
+                await self._websocket_reconnect_task
+            except asyncio.CancelledError:
+                LOGGER.debug("Websocket reconnection task successfully canceled")
+                self._websocket_reconnect_task = None
 
     @callback
     def _async_websocket_on_event(self, event: WebsocketEvent) -> None:
@@ -591,14 +601,7 @@ class SimpliSafe:
             if TYPE_CHECKING:
                 assert self._api.websocket
 
-            if self._websocket_reconnect_task:
-                self._websocket_reconnect_task.cancel()
-                try:
-                    await self._websocket_reconnect_task
-                except asyncio.CancelledError:
-                    LOGGER.debug("Websocket reconnection task successfully canceled")
-                    self._websocket_reconnect_task = None
-
+            await self._async_stop_websocket_loop()
             await self._api.websocket.async_disconnect()
 
         self.entry.async_on_unload(
@@ -641,7 +644,8 @@ class SimpliSafe:
                 data={**self.entry.data, CONF_TOKEN: token},
             )
 
-        async def async_handle_refresh_token(token: str) -> None:
+        @callback
+        def async_handle_refresh_token(token: str) -> None:
             """Handle a new refresh token."""
             async_save_refresh_token(token)
 
@@ -649,6 +653,7 @@ class SimpliSafe:
                 assert self._api.websocket
 
             # Open a new websocket connection with the fresh token:
+            await self._async_stop_websocket_loop()
             self._websocket_reconnect_task = self._hass.async_create_task(
                 self._async_start_websocket_loop()
             )
