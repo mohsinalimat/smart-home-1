@@ -539,6 +539,7 @@ class SimpliSafe:
 
         if should_reconnect:
             LOGGER.info("Disconnected from websocket; reconnecting")
+            await self._async_stop_websocket_loop()
             self._websocket_reconnect_task = self._hass.async_create_task(
                 self._async_start_websocket_loop()
             )
@@ -644,8 +645,7 @@ class SimpliSafe:
                 data={**self.entry.data, CONF_TOKEN: token},
             )
 
-        @callback
-        def async_handle_refresh_token(token: str) -> None:
+        async def async_handle_refresh_token(token: str) -> None:
             """Handle a new refresh token."""
             async_save_refresh_token(token)
 
