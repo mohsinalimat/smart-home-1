@@ -171,6 +171,7 @@ services:
       traefik.http.routers.wildcard-certs.tls.domains[0].sans: |
         *.${TRAEFIK_DOMAIN}
     networks:
+      - default
       - ingress
     ports:
       - 443:443/tcp
@@ -186,7 +187,6 @@ services:
       args:
         modules: https://github.com/leev/ngx_http_geoip2_module.git
     networks:
-      - default
       - ingress
     ports:
       - 8081:8081/tcp
