@@ -543,7 +543,7 @@ sensor:
       - sensor.master_bathroom_temperature
       - sensor.office_node_pro_temperature
       - sensor.pure_humidify_cool_temperature
-      - sensor.tempin
+      - sensor.side_yard_inside_temp
       - sensor.thermostat_air_temperature
       - sensor.upstairs_hallway_sensor_temperature
 
@@ -571,7 +571,7 @@ sensor:
     round_digits: 1
     entity_ids:
       - sensor.office_node_pro_temperature
-      - sensor.tempin
+      - sensor.side_yard_inside_temp
 
 sun:
 
