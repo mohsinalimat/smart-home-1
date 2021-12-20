@@ -151,7 +151,7 @@ services:
       LINODE_TOKEN: ${TRAEFIK_LINODE_API_KEY}
       TRAEFIK_PILOT_DASHBOARD: "false"
     extra_hosts:
-      - host.docker.internal:172.17.0.1
+      - host.docker.internal:172.22.0.1
     image: traefik:${TRAEFIK_VERSION}
     labels:
       traefik.enable: true
@@ -187,7 +187,6 @@ services:
       args:
         modules: https://github.com/leev/ngx_http_geoip2_module.git
     networks:
-      - default
       - ingress
     ports:
       - 8081:8081/tcp
