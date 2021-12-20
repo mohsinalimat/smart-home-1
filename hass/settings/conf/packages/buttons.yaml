@@ -43,10 +43,10 @@ automation:
                 {% endif %}
 
         button_3:
-          - alias: "Turn 'Good Night' mode on"
-            service: script.turn_on
+          - alias: "Toggle the master patio plug"
+            service: switch.toggle
             target:
-              entity_id: script.good_night_mode
+              entity_id: switch.master_patio_outdoor_plug
 
         button_4:
           - alias: "Toggle the master patio light"
