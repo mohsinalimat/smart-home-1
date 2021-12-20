@@ -187,6 +187,7 @@ services:
       args:
         modules: https://github.com/leev/ngx_http_geoip2_module.git
     networks:
+      - default
       - ingress
     ports:
       - 8081:8081/tcp
