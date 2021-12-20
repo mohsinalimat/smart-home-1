@@ -172,9 +172,12 @@ script:
         service: homeassistant.turn_on
         target:
           entity_id:
+            - automation.automatic_lockup
             - automation.automatically_handle_sunrise
             - automation.automatically_handle_sunset
+            - automation.climate_schedule
             - automation.cycle_master_toilet_fan_during_the_day
+            - automation.notify_when_garage_is_left_open
             - automation.notify_when_house_empty_and_insecure
 
       - alias: "Is the water main off?"
