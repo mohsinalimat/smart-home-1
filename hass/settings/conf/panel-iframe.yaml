@@ -1,13 +1,5 @@
 ---
-esphome:
-  title: ESPHome
-  url: !secret panel_url_esphome
-  icon: mdi:chip
 traefik:
   title: Traefik
   url: !secret panel_url_traefik
   icon: mdi:arrow-decision
-zwave_js:
-  title: ZWave JS
-  url: !secret panel_url_zwave_js
-  icon: mdi:z-wave
