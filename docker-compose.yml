@@ -151,10 +151,6 @@ services:
         http://traefik-middleware-ipfilter:8081
       traefik.http.middlewares.security.ratelimit.average: 100
       traefik.http.middlewares.security.ratelimit.burst: 50
-      traefik.http.routers.traefik.entrypoints: websecure
-      traefik.http.routers.traefik.middlewares: auth,blocklist,security
-      traefik.http.routers.traefik.rule: Host(`${TRAEFIK_HOST_TRAEFIK}`)
-      traefik.http.routers.traefik.service: api@internal
       traefik.http.routers.traefik.tls.certresolver: linode
       traefik.http.routers.wildcard-certs.tls.certresolver: linode
       traefik.http.routers.wildcard-certs.tls.domains[0].main: |
