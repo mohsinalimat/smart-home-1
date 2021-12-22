@@ -1,5 +1,1 @@
 ---
-traefik:
-  title: Traefik
-  url: !secret panel_url_traefik
-  icon: mdi:arrow-decision
