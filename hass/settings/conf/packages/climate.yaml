@@ -508,7 +508,7 @@ script:
         variables:
           adjusted_setpoint: >-
             {{
-              target_temperature
+              target_temperature | int
               + (actual_temperature - average_temperature)
             }}
 
