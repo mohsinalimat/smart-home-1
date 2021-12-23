@@ -115,7 +115,7 @@ automation:
               data:
                 variables:
                   target_temperature: >-
-                    {{ states("input_number.adjusted_thermostat_setpoint ") }}
+                    {{ states("input_number.adjusted_thermostat_setpoint") }}
 
         - alias: "Handle our daytime-and-at-home climate schedule"
           conditions:
