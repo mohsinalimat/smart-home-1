@@ -6,7 +6,11 @@ automation:
 
     trigger:
       - platform: webhook
-        webhook_id: "guest_entry_izzy"
+        webhook_id: "guest_entry"
+
+    condition:
+      condition: template
+      value_template: '{{ trigger.json.id == "F0B131E57" }}'
 
     action:
       - alias: "Say hello!"
