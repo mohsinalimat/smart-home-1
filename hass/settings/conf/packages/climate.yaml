@@ -490,12 +490,12 @@ script:
         description: The unadjusted target temperature
         example: 68
         selector:
-        number:
-          min: 45
-          max: 95
-          step: 1
-          unit_of_measurement: °F
-          mode: slider
+          number:
+            min: 45
+            max: 95
+            step: 1
+            unit_of_measurement: °F
+            mode: slider
 
     variables:
       actual_temperature: >-
@@ -516,8 +516,8 @@ script:
         service: climate.set_temperature
         target:
           entity_id: climate.thermostat
-          data:
-            temperature: "{{ adjusted_setpoint }}"
+        data:
+          temperature: "{{ adjusted_setpoint }}"
 
       - alias: "Log the change in the logbook"
         service: logbook.log

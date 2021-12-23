@@ -167,6 +167,7 @@ script:
           entity_id:
             - automation.notify_when_security_status_changes
             - automation.simulate_someone_being_home
+            - group.guest_entry_automations
 
       - alias: "Turn appropriate automations/switches/etc. on"
         service: homeassistant.turn_on

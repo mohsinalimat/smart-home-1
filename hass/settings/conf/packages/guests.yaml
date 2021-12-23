@@ -1,0 +1,91 @@
+---
+automation:
+  - alias: "Guest Entry: Izzy"
+    id: "guest_entry_izzy"
+    mode: restart
+
+    trigger:
+      - platform: webhook
+        webhook_id: "guest_entry_izzy"
+
+    action:
+      - alias: "Say hello!"
+        service: script.turn_on
+        target:
+          entity_id: script.guest_entry
+        data:
+          variables:
+            name: 🙋‍♀️ Izzy
+
+group:
+  guest_entry_automations:
+    entities:
+      - automation.guest_entry_izzy
+
+script:
+  guest_entry:
+    alias: "Guest Entry"
+    description: "Allow a guest to enter the front door"
+
+    fields:
+      name:
+        description: The name of the guest
+        example: Aaron
+
+    sequence:
+      - choose:
+          - conditions:
+              condition: not
+              conditions:
+                - condition: state
+                  entity_id: alarm_control_panel.8673_e_55th_avenue
+                  state: disarmed
+
+            sequence:
+              - alias: "Turn on Walk Home to allow the guest to enter"
+                service: script.turn_on
+                target:
+                  entity_id: script.walk_home_mode
+
+              - alias: "Turn off any automations unfriendly to guests"
+                service: homeassistant.turn_off
+                target:
+                  entity_id:
+                    - automation.automatic_lockup
+                    - automation.notify_when_the_house_is_empty_and_insecure
+                    - automation.simulate_someone_being_home
+                    - input_boolean.climate_away_mode
+
+              - alias: "Notify us that the guest has entered"
+                service: notify.everyone
+                data:
+                  title: Guest Mode
+                  message: >
+                    {{ name }} has just entered the house.
+
+          - conditions:
+              condition: state
+              entity_id: alarm_control_panel.8673_e_55th_avenue
+              state: disarmed
+
+            sequence:
+              - alias: "Turn on Depart Home to lock up"
+                service: script.turn_on
+                target:
+                  entity_id: script.depart_home_mode
+
+              - alias: "Turn automations back on"
+                service: homeassistant.turn_on
+                target:
+                  entity_id:
+                    - automation.automatic_lockup
+                    - automation.notify_when_the_house_is_empty_and_insecure
+                    - automation.simulate_someone_being_home
+                    - input_boolean.climate_away_mode
+
+              - alias: "Notify us that the guest has exited"
+                service: notify.everyone
+                data:
+                  title: Guest Mode
+                  message: >
+                    {{ name }} has just left.
