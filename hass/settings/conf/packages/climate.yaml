@@ -22,6 +22,7 @@ automation:
       - platform: state
         entity_id:
           - binary_sensor.in_bed
+          - input_number.adjusted_thermostat_setpoint
           - input_number.daytime_dyson_fan_speed
           - input_number.daytime_temperature_ac
           - input_number.daytime_temperature_heat
@@ -30,6 +31,7 @@ automation:
           - input_number.nighttime_temperature_heat
           - input_number.thermostat_eco_high_threshold
           - input_number.thermostat_eco_low_threshold
+          - sensor.filtered_average_indoor_temperature
 
     action:
       choose:
@@ -96,6 +98,25 @@ automation:
               target:
                 entity_id: fan.pure_humidify_cool
 
+        - alias: "Handle a request to set an adjusted setpoint"
+          conditions:
+            - condition: template
+              value_template: >-
+                {{
+                  trigger.entity_id
+                  == "input_number.adjusted_thermostat_setpoint"
+                }}
+
+          sequence:
+            - alias: "Set the target thermostat temperature"
+              service: script.turn_on
+              target:
+                entity_id: script.set_adjusted_thermostat_temperature
+              data:
+                variables:
+                  target_temperature: >-
+                    {{ states("input_number.adjusted_thermostat_setpoint ") }}
+
         - alias: "Handle our daytime-and-at-home climate schedule"
           conditions:
             - condition: state
@@ -108,20 +129,23 @@ automation:
 
           sequence:
             - alias: "Set the target thermostat temperature"
-              service: climate.set_temperature
+              service: script.turn_on
               target:
-                entity_id: climate.thermostat
+                entity_id: script.set_adjusted_thermostat_temperature
               data:
-                temperature: >
-                  {%
-                    if states("climate.thermostat") == "cool"
-                  %}
-                    {{ states("input_number.daytime_temperature_ac") | float }}
-                  {% else %}
-                    {{
-                      states("input_number.daytime_temperature_heat") | float
-                    }}
-                  {% endif %}
+                variables:
+                  target_temperature: >-
+                    {%
+                      if states("climate.thermostat") == "cool"
+                    %}
+                      {{
+                        states("input_number.daytime_temperature_ac")
+                      }}
+                    {% else %}
+                      {{
+                        states("input_number.daytime_temperature_heat")
+                      }}
+                    {% endif %}
 
             - alias: "Turn our bedroom fan's night mode off"
               service: switch.turn_off
@@ -153,22 +177,23 @@ automation:
 
           sequence:
             - alias: "Set the target thermostat temperature"
-              service: climate.set_temperature
+              service: script.turn_on
               target:
-                entity_id: climate.thermostat
+                entity_id: script.set_adjusted_thermostat_temperature
               data:
-                temperature: >
-                  {%
-                    if states("climate.thermostat") == "cool"
-                  %}
-                    {{
-                      states("input_number.nighttime_temperature_ac") | float
-                    }}
-                  {% else %}
-                    {{
-                      states("input_number.nighttime_temperature_heat") | float
-                    }}
-                  {% endif %}
+                variables:
+                  target_temperature: >-
+                    {%
+                      if states("climate.thermostat") == "cool"
+                    %}
+                      {{
+                        states("input_number.nighttime_temperature_ac")
+                      }}
+                    {% else %}
+                      {{
+                        states("input_number.nighttime_temperature_heat")
+                      }}
+                    {% endif %}
 
             - alias: "Turn our bedroom fan's night mode on"
               service: switch.turn_on
@@ -352,16 +377,16 @@ input_boolean:
     icon: mdi:home-search
 
 input_number:
+  adjusted_thermostat_setpoint:
+    name: Adjusted Thermostat Setpoint
+    min: 45
+    max: 95
+    step: 1
+    unit_of_measurement: °F
+    mode: slider
+
   daytime_dyson_fan_speed:
     name: "Daytime Dyson Fan Speed"
-    min: 0
-    max: 100
-    step: 10
-    unit_of_measurement: "%"
-    icon: mdi:fan
-
-  nighttime_dyson_fan_speed:
-    name: "Nighttime Dyson Fan Speed"
     min: 0
     max: 100
     step: 10
@@ -376,16 +401,24 @@ input_number:
     unit_of_measurement: °F
     icon: mdi:thermostat
 
-  nighttime_temperature_ac:
-    name: "Nighttime Temperature (A/C)"
+  daytime_temperature_heat:
+    name: "Daytime Temperature (Heat)"
     min: 65
     max: 75
     step: 1
     unit_of_measurement: °F
     icon: mdi:thermostat
 
-  daytime_temperature_heat:
-    name: "Daytime Temperature (Heat)"
+  nighttime_dyson_fan_speed:
+    name: "Nighttime Dyson Fan Speed"
+    min: 0
+    max: 100
+    step: 10
+    unit_of_measurement: "%"
+    icon: mdi:fan
+
+  nighttime_temperature_ac:
+    name: "Nighttime Temperature (A/C)"
     min: 65
     max: 75
     step: 1
@@ -447,6 +480,53 @@ input_select:
       - "off"
       - cool
       - heat
+
+script:
+  set_adjusted_thermostat_temperature:
+    alias: "Set Adjusted Thermostat Temperature"
+
+    fields:
+      target_temperature:
+        description: The unadjusted target temperature
+        example: 68
+        selector:
+        number:
+          min: 45
+          max: 95
+          step: 1
+          unit_of_measurement: °F
+          mode: slider
+
+    variables:
+      actual_temperature: >-
+        {{ state_attr("climate.thermostat", "current_temperature") | round }}
+      average_temperature: >-
+        {{ states("sensor.filtered_average_indoor_temperature") | round }}
+
+    sequence:
+      - alias: "Figure out the offset"
+        variables:
+          adjusted_setpoint: >-
+            {{
+              target_temperature
+              + (actual_temperature - average_temperature)
+            }}
+
+      - alias: "Set the thermostat's adjusted setpoint"
+        service: climate.set_temperature
+        target:
+          entity_id: climate.thermostat
+          data:
+            temperature: "{{ adjusted_setpoint }}"
+
+      - alias: "Log the change in the logbook"
+        service: logbook.log
+        data:
+          name: Thermostat
+          message: >-
+            changed to an adjusted setpoint
+            ({{ target_temperature }}°F -> {{ adjusted_setpoint }}°F)
+          entity_id: climate.thermostat
 
 sensor:
   - platform: filter
