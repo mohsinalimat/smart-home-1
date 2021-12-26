@@ -21,6 +21,27 @@ automation:
           variables:
             name: 🙋‍♀️ Izzy
 
+  - alias: "Guest Entry: Mother"
+    id: "guest_entry_mother"
+    mode: restart
+
+    trigger:
+      - platform: webhook
+        webhook_id: "guest_entry"
+
+    condition:
+      condition: template
+      value_template: '{{ trigger.json.id == "01C242F68" }}'
+
+    action:
+      - alias: "Execute the script"
+        service: script.turn_on
+        target:
+          entity_id: script.guest_entry
+        data:
+          variables:
+            name: 👩🏻‍🦰 Mother
+
 group:
   guest_entry_automations:
     entities:
