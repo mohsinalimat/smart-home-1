@@ -59,6 +59,58 @@ automation:
             {% endif %}
             📥 SimpliSafe Message: {{ message }}
 
+  - alias: "Manage At-Home Simulation"
+    id: "turn_off_simulation_of_someone_being_home"
+
+    trigger:
+      - platform: state
+        entity_id: automation.simulate_someone_being_home
+
+    action:
+      choose:
+        - alias: "The automation has been turned on"
+          conditions:
+            - condition: state
+              entity_id: automation.simulate_someone_being_home
+              state: "on"
+
+          sequence:
+            - alias: "Delay a few seconds"
+              delay: "00:00:03"
+
+            - alias: "Trigger the automation so that state is updated"
+              service: automation.trigger
+              target:
+                entity_id: automation.simulate_someone_being_home
+
+        - alias: "The automation has been turned off"
+          conditions:
+            - condition: state
+              entity_id: automation.simulate_someone_being_home
+              state: "off"
+
+          sequence:
+            - alias: "Turn the TVs off"
+              service: remote.turn_off
+              target:
+                entity_id:
+                  - remote.basement_tv
+                  - remote.living_room_tv
+
+            - choose:
+                - alias: "Perform certain actions only if Cat Mode is off"
+                  conditions:
+                    - condition: state
+                      entity_id: input_boolean.cat_mode
+                      state: "off"
+
+                  sequence:
+                    - alias: "Turn off lights that the cat doesn't need"
+                      service: homeassistant.turn_off
+                      target:
+                        entity_id:
+                          - switch.basement_lights
+
   - alias: "Manage Security via iOS Notifications"
     id: "manage_security_via_ios_notifications"
 
@@ -376,22 +428,6 @@ automation:
                       {% elif eid == "sensor.replay_living_room_tv" %}
                         remote.living_room_roku
                       {% endif %}
-
-  - alias: "Turn off simulation of someone being home"
-    id: "turn_off_simulation_of_someone_being_home"
-
-    trigger:
-      - platform: state
-        entity_id: automation.simulate_someone_being_home
-        to: "off"
-
-    action:
-      - alias: "Turn the TVs off"
-        service: remote.turn_off
-        target:
-          entity_id:
-            - remote.basement_tv
-            - remote.living_room_tv
 
 binary_sensor:
   - platform: template
