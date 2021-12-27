@@ -275,7 +275,6 @@ script:
             - automation.cycle_master_toilet_fan_during_the_day
             - remote.basement_tv
             - remote.living_room_tv
-            - switch.basement_lights
             - switch.fireplace
             - switch.garage_lights
 
@@ -315,6 +314,20 @@ script:
             - media_player.master_bedroom_bathroom
             - media_player.office
             - media_player.sonos_roam
+
+      - choose:
+          - alias: "Perform certain actions only if Cat Mode is off"
+            conditions:
+              - condition: state
+                entity_id: input_boolean.cat_mode
+                state: "off"
+
+            sequence:
+              - alias: "Turn off lights that the cat doesn't need"
+                service: homeassistant.turn_off
+                target:
+                  entity_id:
+                    - switch.basement_lights
 
   drive_home_mode:
     alias: "Drive Home Mode"
