@@ -68,10 +68,15 @@ script:
                   state: disarmed
 
             sequence:
-              - alias: "Turn on Walk Home to allow the guest to enter"
-                service: script.turn_on
+              - alias: "Disarm the alarm"
+                service: alarm_control_panel.alarm_disarm
                 target:
-                  entity_id: script.walk_home_mode
+                  entity_id: alarm_control_panel.8673_e_55th_avenue
+
+              - alias: "Unlock the front door"
+                service: lock.unlock
+                target:
+                  entity_id: lock.front_door_lock
 
               - alias: "Turn off any automations unfriendly to guests"
                 service: homeassistant.turn_off
@@ -95,10 +100,15 @@ script:
               state: disarmed
 
             sequence:
-              - alias: "Turn on Depart Home to lock up"
-                service: script.turn_on
+              - alias: "Arm the alarm"
+                service: alarm_control_panel.alarm_arm_away
                 target:
-                  entity_id: script.depart_home_mode
+                  entity_id: alarm_control_panel.8673_e_55th_avenue
+
+              - alias: "Lock the front door"
+                service: lock.lock
+                target:
+                  entity_id: lock.front_door_lock
 
               - alias: "Turn automations back on"
                 service: homeassistant.turn_on
