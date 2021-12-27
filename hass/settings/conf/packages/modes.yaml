@@ -88,6 +88,47 @@ automation:
               script.walk_home_mode
             {% endif %}
 
+  - alias: "Manage Vacation Mode"
+    id: "manage_vacation_mode"
+
+    trigger:
+      - platform: state
+        entity_id: input_boolean.vacation_mode
+
+    action:
+      - choose:
+          - alias: "Vacation mode is on"
+            conditions:
+              condition: state
+              entity_id: input_boolean.vacation_mode
+              state: "on"
+
+            sequence:
+              - alias: "Turn the water main and humidistat off"
+                service: homeassistant.turn_off
+                target:
+                  entity_id:
+                    - switch.guardian_b4e62d98118d_valve
+                    - switch.humidistat_switchbot
+
+          - alias: "Vacation mode is off"
+            conditions:
+              condition: state
+              entity_id: input_boolean.vacation_mode
+              state: "off"
+
+            sequence:
+              - alias: "Turn the water main and humidistat on"
+                service: homeassistant.turn_on
+                target:
+                  entity_id:
+                    - switch.guardian_b4e62d98118d_valve
+                    - switch.humidistat_switchbot
+
+input_boolean:
+  vacation_mode:
+    name: "Vacation Mode"
+
 ios:
   actions:
     - name: Depart Home
@@ -402,18 +443,6 @@ script:
         service: homeassistant.turn_on
         target:
           entity_id: group.entities_to_turn_on_at_sunset
-
-  vacation_mode:
-    alias: "Vacation Mode"
-    description: "Alter the home when we depart on a trip"
-
-    sequence:
-      - alias: "Turn the water main and humidistat off"
-        service: homeassistant.turn_off
-        target:
-          entity_id:
-            - switch.guardian_b4e62d98118d_valve
-            - switch.humidistat_switchbot
 
   walk_home_mode:
     alias: "Walk Home Mode"
