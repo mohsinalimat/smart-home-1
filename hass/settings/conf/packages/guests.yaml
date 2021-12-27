@@ -46,6 +46,7 @@ group:
   guest_entry_automations:
     entities:
       - automation.guest_entry_izzy
+      - automation.guest_entry_mother
 
 script:
   guest_entry:
