@@ -256,7 +256,22 @@ automation:
           - sensor.replay_living_room_tv
         to: "1"
 
+    variables:
+      cat_mode_ignore:
+        - sensor.replay_basement_lights
+        - sensor.replay_basement_tv
+
     action:
+      - alias: "Ignore certain automations when Cat Mode is on"
+        condition: >-
+          {{
+            not
+            (
+              is_state("input_boolean.cat_mode", "on")
+              and trigger.entity_id in cat_mode_ignore
+            )
+          }}
+
       - choose:
           - conditions:
               - alias: "Handle a switch that needs to be toggled"
