@@ -371,20 +371,12 @@ automation:
         to: "off"
 
     action:
-      - alias: "Turn the basement TV off"
+      - alias: "Turn the TVs off"
         service: remote.turn_off
         target:
-          entity_id: remote.basement_tv
-
-      - alias: "Turn the living room TV off"
-        service: remote.turn_off
-        target:
-          entity_id: remote.living_room_tv
-
-      - alias: "Turn the basement lights of"
-        service: switch.turn_off
-        target:
-          entity_id: switch.basement_lights
+          entity_id:
+            - remote.basement_tv
+            - remote.living_room_tv
 
 binary_sensor:
   - platform: template
