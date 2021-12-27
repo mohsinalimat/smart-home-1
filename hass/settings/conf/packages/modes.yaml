@@ -97,11 +97,11 @@ automation:
 
     action:
       - choose:
-          - alias: "Vacation mode is on"
+          - alias: "Vacation Mode is on"
             conditions:
-              condition: state
-              entity_id: input_boolean.vacation_mode
-              state: "on"
+              - condition: state
+                entity_id: input_boolean.vacation_mode
+                state: "on"
 
             sequence:
               - alias: "Turn the water main and humidistat off"
@@ -111,11 +111,11 @@ automation:
                     - switch.guardian_b4e62d98118d_valve
                     - switch.humidistat_switchbot
 
-          - alias: "Vacation mode is off"
+          - alias: "Vacation Mode is off"
             conditions:
-              condition: state
-              entity_id: input_boolean.vacation_mode
-              state: "off"
+              - condition: state
+                entity_id: input_boolean.vacation_mode
+                state: "off"
 
             sequence:
               - alias: "Turn the water main and humidistat on"
