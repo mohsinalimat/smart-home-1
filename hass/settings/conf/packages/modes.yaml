@@ -126,6 +126,8 @@ automation:
                     - switch.humidistat_switchbot
 
 input_boolean:
+  cat_mode:
+    name: "Cat Mode"
   vacation_mode:
     name: "Vacation Mode"
 
