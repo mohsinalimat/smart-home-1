@@ -315,7 +315,8 @@ automation:
 
     action:
       - alias: "Ignore certain automations when Cat Mode is on"
-        condition: >-
+        condition: template
+        value_template: >-
           {{
             not
             (
