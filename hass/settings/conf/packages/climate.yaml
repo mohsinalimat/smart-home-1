@@ -227,109 +227,109 @@ automation:
           - sensor.proximity_zone
 
     action:
-      choose:
-        - alias: "Handle our arrival with 'normal' outdoor temperatures"
-          conditions:
-            - condition: or
-              conditions:
-                - condition: state
-                  entity_id: sensor.proximity_zone
-                  state: Nearby
+      - choose:
+          - alias: "Handle our arrival with 'normal' outdoor temperatures"
+            conditions:
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Nearby
 
-                - condition: state
-                  entity_id: sensor.proximity_zone
-                  state: Home
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Home
 
-            - condition: template
-              value_template: >
-                {{
-                  states("input_number.outdoor_extreme_low_threshold") <=
-                  states("sensor.feelslike") <=
-                  states("input_number.outdoor_extreme_high_threshold")
-                }}
+              - condition: template
+                value_template: >
+                  {{
+                    states("input_number.outdoor_extreme_low_threshold") <=
+                    states("sensor.feelslike") <=
+                    states("input_number.outdoor_extreme_high_threshold")
+                  }}
 
-          sequence:
-            - alias: "Turn Climate Away Mode off"
-              service: input_boolean.turn_off
-              target:
-                entity_id: input_boolean.climate_away_mode
+            sequence:
+              - alias: "Turn Climate Away Mode off"
+                service: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.climate_away_mode
 
-        - alias: "Handle our departure with 'normal' outdoor temperatures"
-          conditions:
-            - condition: not
-              conditions:
-                - condition: state
-                  entity_id: sensor.proximity_zone
-                  state: Home
-            - condition: template
-              value_template: >
-                {{
-                  states("input_number.outdoor_extreme_low_threshold") <=
-                  states("sensor.feelslike") <=
-                  states("input_number.outdoor_extreme_high_threshold")
-                }}
+          - alias: "Handle our departure with 'normal' outdoor temperatures"
+            conditions:
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Home
+              - condition: template
+                value_template: >
+                  {{
+                    states("input_number.outdoor_extreme_low_threshold") <=
+                    states("sensor.feelslike") <=
+                    states("input_number.outdoor_extreme_high_threshold")
+                  }}
 
-          sequence:
-            - alias: "Turn Climate Away Mode on"
-              service: input_boolean.turn_on
-              target:
-                entity_id: input_boolean.climate_away_mode
+            sequence:
+              - alias: "Turn Climate Away Mode on"
+                service: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.climate_away_mode
 
-        - alias: "Handle our arrival with 'extreme' outdoor temperatures"
-          conditions:
-            - condition: not
-              conditions:
-                - condition: state
-                  entity_id: sensor.proximity_zone
-                  state: Away
+          - alias: "Handle our arrival with 'extreme' outdoor temperatures"
+            conditions:
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: sensor.proximity_zone
+                    state: Away
 
-            - condition: template
-              value_template: >
-                {{
-                  states(
-                    "sensor.feelslike"
-                  ) <= states(
-                    "input_number.outdoor_extreme_low_threshold"
-                  )
-                  or states(
-                    "sensor.feelslike"
-                  ) >= states(
-                    "input_number.outdoor_extreme_high_threshold"
-                  )
-                }}
+              - condition: template
+                value_template: >
+                  {{
+                    states(
+                      "sensor.feelslike"
+                    ) <= states(
+                      "input_number.outdoor_extreme_low_threshold"
+                    )
+                    or states(
+                      "sensor.feelslike"
+                    ) >= states(
+                      "input_number.outdoor_extreme_high_threshold"
+                    )
+                  }}
 
-          sequence:
-            - alias: "Turn Climate Away Mode off"
-              service: input_boolean.turn_off
-              target:
-                entity_id: input_boolean.climate_away_mode
+            sequence:
+              - alias: "Turn Climate Away Mode off"
+                service: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.climate_away_mode
 
-        - alias: "Handle our departure with 'extreme' outdoor temperatures"
-          conditions:
-            - condition: state
-              entity_id: sensor.proximity_zone
-              state: Away
+          - alias: "Handle our departure with 'extreme' outdoor temperatures"
+            conditions:
+              - condition: state
+                entity_id: sensor.proximity_zone
+                state: Away
 
-            - condition: template
-              value_template: >
-                {{
-                  states(
-                    "sensor.feelslike"
-                  ) <= states(
-                    "input_number.outdoor_extreme_low_threshold"
-                  )
-                  or states(
-                    "sensor.feelslike"
-                  ) >= states(
-                    "input_number.outdoor_extreme_high_threshold"
-                  )
-                }}
+              - condition: template
+                value_template: >
+                  {{
+                    states(
+                      "sensor.feelslike"
+                    ) <= states(
+                      "input_number.outdoor_extreme_low_threshold"
+                    )
+                    or states(
+                      "sensor.feelslike"
+                    ) >= states(
+                      "input_number.outdoor_extreme_high_threshold"
+                    )
+                  }}
 
-          sequence:
-            - alias: "Turn Climate Away Mode on"
-              service: input_boolean.turn_on
-              target:
-                entity_id: input_boolean.climate_away_mode
+            sequence:
+              - alias: "Turn Climate Away Mode on"
+                service: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.climate_away_mode
 
   - alias: "Thermostat Sleep Timer"
     id: "thermostat_sleep_timer"
