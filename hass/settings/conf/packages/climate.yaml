@@ -128,24 +128,50 @@ automation:
               state: "off"
 
           sequence:
-            - alias: "Set the target thermostat temperature"
-              service: script.turn_on
-              target:
-                entity_id: script.set_adjusted_thermostat_temperature
-              data:
-                variables:
-                  target_temperature: >-
-                    {%
-                      if states("climate.thermostat") == "cool"
-                    %}
-                      {{
-                        states("input_number.daytime_temperature_ac")
-                      }}
-                    {% else %}
-                      {{
-                        states("input_number.daytime_temperature_heat")
-                      }}
-                    {% endif %}
+            - alias: "Figure out the target temperature"
+              variables:
+                target_temperature: >-
+                  {%
+                    if states("climate.thermostat") == "cool"
+                  %}
+                    {{
+                      states("input_number.daytime_temperature_ac")
+                    }}
+                  {% else %}
+                    {{
+                      states("input_number.daytime_temperature_heat")
+                    }}
+                  {% endif %}
+
+            - choose:
+                - alias: "Handle an adjusted temperature"
+                  conditions:
+                    - condition: state
+                      entity_id: input_boolean.use_adjusted_temperature
+                      state: "on"
+
+                  sequence:
+                    - alias: "Set the target thermostat temperature"
+                      service: script.turn_on
+                      target:
+                        entity_id: script.set_adjusted_thermostat_temperature
+                      data:
+                        variables:
+                          target_temperature: "{{ target_temperature }}"
+
+                - alias: "Handle an unadjusted temperature"
+                  conditions:
+                    - condition: state
+                      entity_id: input_boolean.use_adjusted_temperature
+                      state: "off"
+
+                  sequence:
+                    - alias: "Set the target thermostat temperature"
+                      service: climate.set_temperature
+                      target:
+                        entity_id: climate.thermostat
+                      data:
+                        temperature: "{{ target_temperature }}"
 
             # - alias: "Turn our bedroom fan's night mode off"
             #   service: switch.turn_off
@@ -176,24 +202,50 @@ automation:
               state: "off"
 
           sequence:
-            - alias: "Set the target thermostat temperature"
-              service: script.turn_on
-              target:
-                entity_id: script.set_adjusted_thermostat_temperature
-              data:
-                variables:
-                  target_temperature: >-
-                    {%
-                      if states("climate.thermostat") == "cool"
-                    %}
-                      {{
-                        states("input_number.nighttime_temperature_ac")
-                      }}
-                    {% else %}
-                      {{
-                        states("input_number.nighttime_temperature_heat")
-                      }}
-                    {% endif %}
+            - alias: "Figure out the target temperature"
+              variables:
+                target_temperature: >-
+                  {%
+                    if states("climate.thermostat") == "cool"
+                  %}
+                    {{
+                      states("input_number.nighttime_temperature_ac")
+                    }}
+                  {% else %}
+                    {{
+                      states("input_number.nighttime_temperature_heat")
+                    }}
+                  {% endif %}
+
+            - choose:
+                - alias: "Handle an adjusted temperature"
+                  conditions:
+                    - condition: state
+                      entity_id: input_boolean.use_adjusted_temperature
+                      state: "on"
+
+                  sequence:
+                    - alias: "Set the target thermostat temperature"
+                      service: script.turn_on
+                      target:
+                        entity_id: script.set_adjusted_thermostat_temperature
+                      data:
+                        variables:
+                          target_temperature: "{{ target_temperature }}"
+
+                - alias: "Handle an unadjusted temperature"
+                  conditions:
+                    - condition: state
+                      entity_id: input_boolean.use_adjusted_temperature
+                      state: "off"
+
+                  sequence:
+                    - alias: "Set the target thermostat temperature"
+                      service: climate.set_temperature
+                      target:
+                        entity_id: climate.thermostat
+                      data:
+                        temperature: "{{ target_temperature }}"
 
             # - alias: "Turn our bedroom fan's night mode on"
             #   service: switch.turn_on
