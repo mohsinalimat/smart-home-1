@@ -45,8 +45,6 @@ services:
       ESPHOME_DASHBOARD_USE_PING: "true"
     image: esphome/esphome:${ESPHOME_VERSION}
     network_mode: host
-    ports:
-      - 6052:6052/tcp
     restart: always
     volumes:
       - ./esphome:/config
