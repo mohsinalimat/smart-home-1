@@ -22,6 +22,7 @@ automation:
       - platform: state
         entity_id:
           - binary_sensor.in_bed
+          - input_boolean.use_adjusted_temperature
           - input_number.adjusted_thermostat_setpoint
           - input_number.daytime_dyson_fan_speed
           - input_number.daytime_temperature_ac
