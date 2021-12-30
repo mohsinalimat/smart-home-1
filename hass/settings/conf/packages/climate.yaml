@@ -75,10 +75,10 @@ automation:
                     states("input_number.thermostat_eco_low_threshold") | float
                   }}
 
-            - alias: "Turn our bedroom fan off"
-              service: fan.turn_off
-              target:
-                entity_id: fan.pure_humidify_cool
+            # - alias: "Turn our bedroom fan off"
+            #   service: fan.turn_off
+            #   target:
+            #     entity_id: fan.pure_humidify_cool
 
         - alias: "Handle turning Climate Away Mode off"
           conditions:
@@ -93,10 +93,10 @@ automation:
               data:
                 hvac_mode: "{{ states('input_select.last_hvac_mode') }}"
 
-            - alias: "Turn our bedroom fan on "
-              service: fan.turn_on
-              target:
-                entity_id: fan.pure_humidify_cool
+            # - alias: "Turn our bedroom fan on "
+            #   service: fan.turn_on
+            #   target:
+            #     entity_id: fan.pure_humidify_cool
 
         - alias: "Handle a request to set an adjusted setpoint"
           conditions:
@@ -147,23 +147,23 @@ automation:
                       }}
                     {% endif %}
 
-            - alias: "Turn our bedroom fan's night mode off"
-              service: switch.turn_off
-              target:
-                entity_id: switch.pure_humidify_cool_night_mode
+            # - alias: "Turn our bedroom fan's night mode off"
+            #   service: switch.turn_off
+            #   target:
+            #     entity_id: switch.pure_humidify_cool_night_mode
 
-            - alias: "Turn our bedroom fan's humidifier off"
-              service: humidifier.turn_off
-              target:
-                entity_id: humidifier.pure_humidify_cool
+            # - alias: "Turn our bedroom fan's humidifier off"
+            #   service: humidifier.turn_off
+            #   target:
+            #     entity_id: humidifier.pure_humidify_cool
 
-            - alias: "Set the bedroom fan's speed"
-              service: fan.set_percentage
-              target:
-                entity_id: fan.pure_humidify_cool
-              data:
-                percentage: >
-                  {{ states("input_number.daytime_dyson_fan_speed") | int }}
+            # - alias: "Set the bedroom fan's speed"
+            #   service: fan.set_percentage
+            #   target:
+            #     entity_id: fan.pure_humidify_cool
+            #   data:
+            #     percentage: >
+            #       {{ states("input_number.daytime_dyson_fan_speed") | int }}
 
         - alias: "Handle our nighttime-and-at-home climate schedule"
           conditions:
@@ -195,23 +195,23 @@ automation:
                       }}
                     {% endif %}
 
-            - alias: "Turn our bedroom fan's night mode on"
-              service: switch.turn_on
-              target:
-                entity_id: switch.pure_humidify_cool_night_mode
+            # - alias: "Turn our bedroom fan's night mode on"
+            #   service: switch.turn_on
+            #   target:
+            #     entity_id: switch.pure_humidify_cool_night_mode
 
-            - alias: "Turn our bedroom fan's humidifier on "
-              service: humidifier.turn_on
-              target:
-                entity_id: humidifier.pure_humidify_cool
+            # - alias: "Turn our bedroom fan's humidifier on "
+            #   service: humidifier.turn_on
+            #   target:
+            #     entity_id: humidifier.pure_humidify_cool
 
-            - alias: "Set the bedroom fan's speed"
-              service: fan.set_percentage
-              target:
-                entity_id: fan.pure_humidify_cool
-              data:
-                percentage: >
-                  {{ states("input_number.nighttime_dyson_fan_speed") | int }}
+            # - alias: "Set the bedroom fan's speed"
+            #   service: fan.set_percentage
+            #   target:
+            #     entity_id: fan.pure_humidify_cool
+            #   data:
+            #     percentage: >
+            #       {{ states("input_number.nighttime_dyson_fan_speed") | int }}
 
   - alias: "Proximity Climate Away Mode"
     id: "proximity_climate_away_mode"
@@ -375,6 +375,8 @@ input_boolean:
   climate_away_mode:
     name: "Climate Away Mode"
     icon: mdi:home-search
+  use_adjusted_temperature:
+    name: "Use Adjusted Temperature"
 
 input_number:
   adjusted_thermostat_setpoint:
@@ -562,7 +564,7 @@ sensor:
       - sensor.humidityin
       - sensor.master_bathroom_humidity
       - sensor.office_node_pro_humidity
-      - sensor.pure_humidify_cool_humidity
+      # - sensor.pure_humidify_cool_humidity
       - sensor.thermostat_humidity
 
   - platform: moon
@@ -622,7 +624,7 @@ sensor:
       - sensor.kitchen_sink_sensor_temperature
       - sensor.master_bathroom_temperature
       - sensor.office_node_pro_temperature
-      - sensor.pure_humidify_cool_temperature
+      # - sensor.pure_humidify_cool_temperature
       - sensor.side_yard_inside_temp
       - sensor.thermostat_air_temperature
       - sensor.upstairs_hallway_sensor_temperature
