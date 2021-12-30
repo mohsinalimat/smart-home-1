@@ -566,7 +566,7 @@ script:
               + (actual_temperature - average_temperature)
             }}
 
-      - alais: "Abort if we're already at the offset"
+      - alias: "Abort if we're already at the offset"
         condition: template
         value_template: >-
           {{
