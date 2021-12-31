@@ -21,7 +21,7 @@ services:
       - ingress
     ports:
       - 127.0.0.1:2375:2375/tcp
-    restart: always
+    restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
@@ -36,7 +36,7 @@ services:
     image: bachya/ecowitt2mqtt:${ECOWITT2MQTT_VERSION}
     ports:
       - 8080:8080/tcp
-    restart: always
+    restart: unless-stopped
 
   esphome:
     depends_on:
@@ -45,7 +45,7 @@ services:
       ESPHOME_DASHBOARD_USE_PING: "true"
     image: esphome/esphome:${ESPHOME_VERSION}
     network_mode: host
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./esphome:/config
 
@@ -66,7 +66,7 @@ services:
       traefik.http.routers.hass.tls: true
       traefik.http.services.hass.loadbalancer.server.port: 8123
     network_mode: host
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./hass/settings/blueprints:/config/blueprints
       - ./hass/settings/conf:/config/conf
@@ -91,7 +91,7 @@ services:
     image: postgres:${POSTGRES_VERSION}-alpine
     ports:
       - 5432:5432/tcp
-    restart: always
+    restart: unless-stopped
     volumes:
       - hass-db-data:/var/lib/postgresql/data
 
@@ -106,7 +106,7 @@ services:
     image: "netdata/netdata:v${NETDATA_VERSION}"
     ports:
       - 19999:19999
-    restart: always
+    restart: unless-stopped
     security_opt:
       - apparmor:unconfined
     volumes:
@@ -162,7 +162,7 @@ services:
       - ingress
     ports:
       - 443:443/tcp
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./traefik/settings:/etc/traefik:ro
       - /var/log/traefik:/var/log
@@ -177,7 +177,7 @@ services:
       - ingress
     ports:
       - 8081:8081/tcp
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./traefik-middleware-ipfilter/geoip.conf:/etc/nginx/conf.d/geoip.conf:ro
       - ./traefik-middleware-ipfilter/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -212,7 +212,7 @@ services:
     image: vernemq/vernemq:${VERNEMQ_VERSION}-alpine
     ports:
       - 1883:1883/tcp
-    restart: always
+    restart: unless-stopped
     user: root
     volumes:
       - /etc/ssl:/etc/ssl:ro
@@ -227,7 +227,7 @@ services:
     ports:
       - 127.0.0.1:3000:3000/tcp
       - 8091:8091/tcp
-    restart: always
+    restart: unless-stopped
     volumes:
       - zwave-js-config:/usr/src/app/store
 
